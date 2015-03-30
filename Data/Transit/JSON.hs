@@ -2,6 +2,7 @@
 module Data.Transit.JSON where
 
 import Data.Text (Text)
+import Data.Scientific (base10Exponent)
 import qualified Data.Vector as V
 import qualified Data.Aeson as J
 import Data.ByteString.Lazy (ByteString)
@@ -26,8 +27,10 @@ instance J.ToJSON (AsKey, Value) where
   toJSON (AsKey, Bool True) = str "~?t"
   toJSON (_, String val) = J.toJSON val
   toJSON (_, Array val) = J.Array $ V.fromList $ map (J.toJSON . (,) AsVal) val
+  toJSON (_, Int val) = J.toJSON val
 --  toJSON (_, Dict val) = dictToJson val
 
 instance J.FromJSON Value where
   parseJSON (J.Bool b) = return $ Bool b
+  parseJSON (J.Number b) = return $ Int (base10Exponent b) -- TODO:!!!!
   parseJSON (J.Array vec) = Array `fmap` mapM J.parseJSON (V.toList vec)
