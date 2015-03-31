@@ -46,8 +46,9 @@ parseTaggedString' ('i':rest) = case toBoundedInteger $ read rest of
                                   Just num -> Int num
                                   Nothing  -> Null
 
-parseTaggedString' ('m':rest) = DateTime $ posixSecondsToUTCTime secs
-                                  where secs = realToFrac $ (read rest) / 1000
+parseTaggedString' ('m':rest) = trace ("unpacking " ++ rest ++ " [" ++ (show (posixSecondsToUTCTime secs)) ++ "]")
+                                      (DateTime $ posixSecondsToUTCTime secs)
+                                   where secs = realToFrac $ (read rest) / 1000
 
 parseTaggedString' "?f" = Bool False
 
@@ -77,7 +78,8 @@ instance J.ToJSON (AsWhat, Value) where
   toJSON (AsKey, Float val) = taggedString "d" (show val)
   toJSON (AsVal, Float val) = J.Number (fromFloatDigits val)
   toJSON (_, Dict val) = dictToJson val
-  toJSON (_, DateTime val) = taggedString "m" (show (1000 * (utcTimeToPOSIXSeconds val)))
+  toJSON (_, DateTime val) = trace ("packing " ++ msecs) (taggedString "m" msecs)
+                               where msecs = show $ round $ 1000 * (utcTimeToPOSIXSeconds val)
 
 instance J.FromJSON Value where
   parseJSON (J.Bool b) = return $ Bool b

@@ -44,14 +44,14 @@ tests :: [Test]
 tests = [
   testGroup "Encoding's reversibility"
     [ testProperty "Bools" (propRev :: [Bool] -> Bool)
-    , testProperty "Strings" (propRev :: [T.Text] -> Bool)
-    , testProperty "Ints" (propRev :: [Int] -> Bool)
-    , testProperty "Floats" (propRev :: [Float] -> Bool)
+    --, testProperty "Strings" (propRev :: [T.Text] -> Bool)
+    --, testProperty "Ints" (propRev :: [Int] -> Bool)
+    --, testProperty "Floats" (propRev :: [Float] -> Bool)
     , testProperty "Dates" (propRev :: [UTCTime] -> Bool)
-    , testProperty "Maps of Int -> Int" (propRev :: [Map Int Int] -> Bool)
-    , testProperty "Maps of Int -> Bool" (propRev :: [Map Int Bool] -> Bool)
-    , testProperty "Maps of Bool -> Int" (propRev :: [Map Bool Int] -> Bool)
-    , testProperty "Maps of String -> Maps of Int -> Int" (propRev :: [Map T.Text (Map Int Int)] -> Bool)
+    --, testProperty "Maps of Int -> Int" (propRev :: [Map Int Int] -> Bool)
+    --, testProperty "Maps of Int -> Bool" (propRev :: [Map Int Bool] -> Bool)
+    --, testProperty "Maps of Bool -> Int" (propRev :: [Map Bool Int] -> Bool)
+    --, testProperty "Maps of String -> Maps of Int -> Int" (propRev :: [Map T.Text (Map Int Int)] -> Bool)
     ]
   ]
 
