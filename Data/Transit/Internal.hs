@@ -9,6 +9,7 @@ data Value = Bool Bool
            | String Text
            | Array [Value]
            | Int Int
+           | Float Float
            | Dict [(Value, Value)]
            | Null
            deriving (Show, Ord, Eq)
@@ -34,6 +35,9 @@ instance ToTransit Text where
 instance ToTransit Int where
   toTransit = Int
 
+instance ToTransit Float where
+  toTransit = Float
+
 instance ToTransit a => ToTransit (Maybe a) where
   toTransit (Just v) = toTransit v
   toTransit Nothing  = Null
@@ -54,6 +58,9 @@ instance FromTransit Text where
 
 instance FromTransit Int where
   fromTransit (Int i) = Just i
+
+instance FromTransit Float where
+  fromTransit (Float f) = Just f
 
 instance FromTransit a => FromTransit (Maybe a) where
   fromTransit Null = Just Nothing

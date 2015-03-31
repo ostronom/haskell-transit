@@ -32,11 +32,9 @@ tests :: [Test]
 tests = [
   testGroup "Encoding's reversibility"
     [ testProperty "Bools" (propRev :: [Bool] -> Bool)
-    , testProperty "Nested bools" (propRev :: [[Bool]] -> Bool)
     , testProperty "Strings" (propRev :: [T.Text] -> Bool)
-    , testProperty "Nested strings" (propRev :: [[T.Text]] -> Bool)
     , testProperty "Ints" (propRev :: [Int] -> Bool)
-    , testProperty "Nested Ints" (propRev :: [[Int]] -> Bool)
+    , testProperty "Floats" (propRev :: [Float] -> Bool)
     , testProperty "Maps of Int -> Int" (propRev :: [Map Int Int] -> Bool)
     , testProperty "Maps of Int -> Bool" (propRev :: [Map Int Bool] -> Bool)
     , testProperty "Maps of Bool -> Int" (propRev :: [Map Bool Int] -> Bool)
