@@ -1,9 +1,11 @@
-module Data.Transit where
+module Data.Transit (encode, decode) where
 
-import Data.Transit.Internal as I
+import qualified Data.Transit.Internal as I
+import Data.Transit.JSON
 
-encode :: (Repr a s, ToTransit v) => a -> v -> s
-encode repr = I.encode repr . toTransit
 
-decode :: (Repr a s, FromTransit v) => a -> s -> Maybe v
-decode repr str = I.decode repr str >>= fromTransit
+encode :: (I.Repr a s, I.ToTransit v) => a -> v -> s
+encode repr = I.encode repr . I.toTransit
+
+decode :: (I.Repr a s, I.FromTransit v) => a -> s -> Maybe v
+decode repr str = I.decode repr str >>= I.fromTransit
