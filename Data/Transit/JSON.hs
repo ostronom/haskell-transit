@@ -40,15 +40,17 @@ parseTransitArray vec =
 
 
 {- TODO: implement extensions -}
-parseTaggedString s =
-  case T.head s of
-    'i' -> case toBoundedInteger $ read $ T.unpack $ T.tail s of
-             Just num -> Int num
-             Nothing  -> Null
-    _   -> Null
+
+parseTaggedString' ('i':rest) = case toBoundedInteger $ read rest of
+                                  Just num -> Int num
+                                  Nothing  -> Null
+parseTaggedString' "?f" = Bool False
+parseTaggedString' "?t" = Bool True
+parseTaggedString' x = Null
+
 
 parseTransitString s =
-  if T.head s == '~' then parseTaggedString $ T.tail s else String s
+  if T.head s == '~' then parseTaggedString' $ T.unpack $ T.tail s else String s
 
 instance Repr JSON ByteString where
   encode JSON val = J.encode (AsVal, val)
