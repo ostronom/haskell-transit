@@ -2,6 +2,7 @@
 module Data.Transit.Internal where
 
 import Data.Text (Text)
+import Data.Time.Clock (UTCTime)
 import qualified Data.Map as M
 import Control.Applicative ((<$>))
 
@@ -11,8 +12,9 @@ data Value = Bool Bool
            | Int Int
            | Float Float
            | Dict [(Value, Value)]
+           | DateTime UTCTime
            | Null
-           deriving (Show, Ord, Eq)
+--           deriving (Show, Ord, Eq)
 
 class ToTransit a where
   toTransit :: a -> Value
@@ -38,6 +40,9 @@ instance ToTransit Int where
 instance ToTransit Float where
   toTransit = Float
 
+instance ToTransit UTCTime where
+  toTransit = DateTime
+
 instance ToTransit a => ToTransit (Maybe a) where
   toTransit (Just v) = toTransit v
   toTransit Nothing  = Null
@@ -61,6 +66,9 @@ instance FromTransit Int where
 
 instance FromTransit Float where
   fromTransit (Float f) = Just f
+
+instance FromTransit UTCTime where
+  fromTransit (DateTime x) = Just x
 
 instance FromTransit a => FromTransit (Maybe a) where
   fromTransit Null = Just Nothing

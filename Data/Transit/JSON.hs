@@ -6,6 +6,7 @@ import Debug.Trace
 import qualified Data.Text as T
 import Data.Scientific (toBoundedInteger, fromFloatDigits, toRealFloat)
 import qualified Data.Map as M
+import Data.Time.Clock.POSIX (posixSecondsToUTCTime, utcTimeToPOSIXSeconds)
 import Data.Maybe (fromJust)
 import qualified Data.Vector as V
 import qualified Data.Aeson as J
@@ -44,10 +45,15 @@ parseTransitArray vec =
 parseTaggedString' ('i':rest) = case toBoundedInteger $ read rest of
                                   Just num -> Int num
                                   Nothing  -> Null
-parseTaggedString' "?f" = Bool False
-parseTaggedString' "?t" = Bool True
-parseTaggedString' x = Null
 
+parseTaggedString' ('m':rest) = DateTime $ posixSecondsToUTCTime secs
+                                  where secs = realToFrac $ (read rest) / 1000
+
+parseTaggedString' "?f" = Bool False
+
+parseTaggedString' "?t" = Bool True
+
+parseTaggedString' x = Null
 
 parseTransitString s =
   if T.head s == '~' then parseTaggedString' $ T.unpack $ T.tail s else String s
@@ -71,6 +77,7 @@ instance J.ToJSON (AsWhat, Value) where
   toJSON (AsKey, Float val) = taggedString "d" (show val)
   toJSON (AsVal, Float val) = J.Number (fromFloatDigits val)
   toJSON (_, Dict val) = dictToJson val
+  toJSON (_, DateTime val) = taggedString "m" (show (1000 * (utcTimeToPOSIXSeconds val)))
 
 instance J.FromJSON Value where
   parseJSON (J.Bool b) = return $ Bool b
