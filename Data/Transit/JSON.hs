@@ -39,6 +39,7 @@ parseTransitArray vec =
     _                    -> Array `fmap` mapM J.parseJSON (V.toList vec)
 
 
+{- TODO: implement extensions -}
 parseTaggedString s =
   case T.head s of
     'i' -> case toBoundedInteger $ read $ T.unpack $ T.tail s of
@@ -68,6 +69,5 @@ instance J.ToJSON (AsWhat, Value) where
 instance J.FromJSON Value where
   parseJSON (J.Bool b) = return $ Bool b
   parseJSON (J.String s) = return $ parseTransitString s
-  -- return $ String s
   parseJSON (J.Number n) = return $ Int $ fromJust $ toBoundedInteger n
   parseJSON (J.Array vec) = parseTransitArray vec
